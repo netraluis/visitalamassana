@@ -108,18 +108,14 @@ const Carousel = () => {
 
   const handleMouseDown = (e: any) => {
     e.preventDefault();
-    // console.log("handleMouseDown", e.movementX, e.clientX, e.touches[0].clientX);
     setIsDragging(true);
-    const getStartX = e.clientX ? e.clientX : e.touches[0].clientX;
-    setStartX(getStartX);
+    setStartX(e.clientX);
     carousel.current.style.cursor = "grabbing";
   };
 
   const handleMouseUp = (e: any) => {
     setIsDragging(false);
-    const getCurrentX = e.clientX 
-    const distance = getCurrentX - startX;
-    console.log("handleMouseUp", { getCurrentX, startX, distance });
+    const distance = e.clientX  - startX;
     if (Math.abs(distance) < 10) {
       return setIsAnchor(true);
     }
@@ -146,6 +142,34 @@ const Carousel = () => {
     },
     [isDragging]
   );
+
+  const handleTouchStart = (e: any) => {
+    setIsDragging(true);
+    setStartX(e.touches[0].clientX);
+    carousel.current.style.cursor = "grabbing";
+  };
+  const handleTouchMove = (e:any) => {
+    const touchCoordinate = e.touches[0].clientX;
+    setPosition((currentPosition) => {
+      // const sliderWidth = carousel.current.offsetWidth;
+      // para saber el ancho del contenedor para quitar las flechas
+      let newPosition = currentPosition + (touchCoordinate - startX);
+      if (newPosition > 0) {
+        setStartX(0)
+        return 0;
+      }
+      if (-newPosition > maxScrollWidth.current) {
+        setStartX(-newPosition)
+        return -maxScrollWidth.current;
+      }
+      setStartX(touchCoordinate)
+      return newPosition;
+    });
+  };
+
+  const handleTouchEnd = (e: any) => {
+    setIsDragging(false);
+  }
 
   return (
     <>
@@ -199,11 +223,9 @@ const Carousel = () => {
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseUp}
               onMouseUp={handleMouseUp}
-              onTouchStart={(e)=> {
-                console.log('touchstart');
-                return handleMouseDown(e)}}
-              onTouchMove={handleMouseMove}
-              onTouchEnd={handleMouseUp}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
             >
               <div
                 ref={draggableRef}
