@@ -1,5 +1,6 @@
+"use client";
+import { useState, useRef, useEffect, useCallback, use } from "react";
 import Logo from "../logos/logo";
-import Image from "next/image";
 
 const logos = [
   {
@@ -52,167 +53,182 @@ const logos = [
   },
 ];
 
-const Slider = (props: any) => (
-  <div className="lg:my-12">
-    <section className="mt-8 container mx-auto px-2 lg:flex lg:justify-between lg:items-center">
-      <div className="lg:max-w-[60%] mx-2 lg:mx-0">
-        <h3 className="text-2xl font-pt font-bold mb-2 text-black">
-          Qué hacer en la Massana
-        </h3>
-        <p></p>
-      </div>
+const Carousel = () => {
+  const maxScrollWidth = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carousel = useRef<any>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [isAnchor, setIsAnchor] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const draggableRef = useRef<any>(null);
+  const articleRef = useRef<any>(null);
 
-      <div className="hidden lg:block">
-        <button
-          id="splide-carousel-1--previous-btn"
-          className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2"
-          type="button"
-          aria-label="Next slide"
-          aria-controls="splide04-track"
-        >
-          <Image
-            alt="left arrow"
-            width={100}
-            height={100}
-            src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-            className="w-auto h-4 w-full"
-          />
-        </button>
-        <button
-          id="splide-carousel-1--next-btn"
-          className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5"
-          type="button"
-          aria-label="Next slide"
-          aria-controls="splide04-track"
-        >
-          <Image
-            alt="right arrow"
-            width={100}
-            height={100}
-            src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-            className="w-auto h-4 w-full rotate-180"
-          />
-        </button>
-      </div>
-    </section>
-    <section className="mb-8 container lg:max-w-full mx-auto px-2">
-      <article
-        className="my-2 splide splide-carousel-small splide-carousel-small-1 is-initialized splide--slide splide--ltr splide--draggable is-active"
-        id="splide01"
-        role="region"
-        aria-roledescription="carousel"
-      >
-        <div
-          className="splide__track splide__track--slide splide__track--ltr splide__track--draggable"
-          id="splide01-track"
-          style={{ paddingLeft: "0px", paddingRight: "30px" }}
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          <ul
-            className="splide__list"
-            id="splide01-list"
-            role="presentation"
-            style={{ transform: "translateX(0px)" }}
-          >
-            {/* {logos.map((logo, index) =>{ 
-                console.log(logo)
-            return <Logo key={index} href={logo.href} src={logo.src} alt={logo.alt}/>})} */}
-            {/* <li className="splide__slide">
-              <Logo
-                href="/tracks"
-                src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Senderisme-600.jpg"
-                alt="senderisme-600"
-                text="Senderismo"
+  const movePrev = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prevState) => prevState - 1);
+    }
+  };
+
+  const moveNext = () => {
+    if (
+      carousel.current !== null &&
+      carousel.current.offsetWidth * currentIndex <= maxScrollWidth.current
+    ) {
+      setCurrentIndex((prevState) => prevState + 1);
+    }
+  };
+
+  const isDisabled = (direction: any) => {
+    if (direction === "prev") {
+      return currentIndex <= 0;
+    }
+
+    if (direction === "next" && carousel.current !== null) {
+      return (
+        carousel.current.offsetWidth * currentIndex >= maxScrollWidth.current
+      );
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    if (carousel !== null && carousel.current !== null) {
+      carousel.current.scrollLeft = carousel.current.offsetWidth * currentIndex;
+    }
+  }, [currentIndex]);
+
+  useEffect(() => {
+    maxScrollWidth.current = carousel.current
+      ? carousel.current.scrollWidth - carousel.current.offsetWidth
+      : 0;
+  }, []);
+
+
+  const handleMouseDown = (e: any) => {
+    e.preventDefault();
+    // console.log("handleMouseDown", e.movementX, e.clientX, e.touches[0].clientX);
+    setIsDragging(true);
+    const getStartX = e.clientX ? e.clientX : e.touches[0].clientX;
+    setStartX(getStartX);
+    carousel.current.style.cursor = "grabbing";
+  };
+
+  const handleMouseUp = (e: any) => {
+    setIsDragging(false);
+    const getCurrentX = e.clientX 
+    const distance = getCurrentX - startX;
+    console.log("handleMouseUp", { getCurrentX, startX, distance });
+    if (Math.abs(distance) < 10) {
+      return setIsAnchor(true);
+    }
+    setIsAnchor(false);
+    carousel.current.style.cursor = "grab";
+  };
+
+  const handleMouseMove = useCallback(
+    (e: any) => {
+      if (isDragging) {
+        setPosition((currentPosition) => {
+          // const sliderWidth = carousel.current.offsetWidth;
+          // para saber el ancho del contenedor para quitar las flechas
+          let newPosition = currentPosition + e.movementX;
+          if (newPosition > 0) {
+            return 0;
+          }
+          if (-newPosition > maxScrollWidth.current) {
+            return -maxScrollWidth.current;
+          }
+          return newPosition;
+        });
+      }
+    },
+    [isDragging]
+  );
+
+  return (
+    <>
+      <div className="lg:my-12">
+        <section className="mt-8 container mx-auto px-2 lg:flex lg:justify-between lg:items-center">
+          <div className="lg:max-w-[60%] mx-2 lg:mx-0">
+            <h3 className="text-2xl font-pt font-bold mb-2 text-black">
+              Qué hacer en la Massana
+            </h3>
+            <p></p>
+          </div>
+
+          <div className="hidden lg:block mb-2">
+            <button
+              onClick={movePrev}
+              disabled={isDisabled("prev")}
+              id="splide-carousel-1--previous-btn"
+              className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2"
+              type="button"
+              aria-label="Next slide"
+              aria-controls="splide04-track"
+            >
+              <img
+                src="https://www.visitlamassana.ad/img/arrow-slider.svg"
+                className="w-auto h-4 w-full"
               />
-            </li>
-            <li className="splide__slide">
-              <Logo
-                href="/tracks"
-                src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Senderisme-600.jpg"
-                alt="senderisme-600"
-                text="Senderismo"
-              /> */}
-            </li>
-          </ul>
-        </div>
-      </article>
-    </section>
-  </div>
-);
+            </button>
+            <button
+              disabled={isDisabled("next")}
+              onClick={moveNext}
+              id="splide-carousel-1--next-btn"
+              className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5"
+              type="button"
+              aria-label="Next slide"
+              aria-controls="splide04-track"
+            >
+              <img
+                src="https://www.visitlamassana.ad/img/arrow-slider.svg"
+                className="w-auto h-4 w-full rotate-180"
+              />
+            </button>
+          </div>
+        </section>
 
-export default Slider;
+        <section className="mb-8 container lg:max-w-full mx-auto px-2">
+          <article ref={articleRef} className="my-2 is-initialized is-active">
+            <div
+              ref={carousel}
+              className="relative gap-1 overflow-hidden scroll-smooth cursor-grab w-100 z-0"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseUp}
+              onMouseUp={handleMouseUp}
+              onTouchStart={(e)=> {
+                console.log('touchstart');
+                return handleMouseDown(e)}}
+              onTouchMove={handleMouseMove}
+              onTouchEnd={handleMouseUp}
+            >
+              <div
+                ref={draggableRef}
+                className="flex "
+                style={{ transform: `translateX(${position}px)`}}
+              >
+                {logos.map((logo, index) => {
+                  return (
+                    <Logo
+                      key={index}
+                      href={logo.href}
+                      src={logo.src}
+                      alt={logo.alt}
+                      text={logo.text}
+                      isAnchor={isAnchor}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </>
+  );
+};
 
-{
-  /* <a href="/tracks" className="relative mt-4 splide__slide is-active is-visible" id="splide01-slide01" role="group" aria-roledescription="slide" aria-label="1 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Senderisme-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Senderismo
-</h5>
-</a>
-<a href="/cicloturisme" className="relative mt-4 splide__slide is-visible is-next" id="splide01-slide02" role="group" aria-roledescription="slide" aria-label="2 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Cicloturisme-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Cicloturismo
-</h5>
-</a>
-<a href="/tracks" className="relative mt-4 splide__slide is-visible" id="splide01-slide03" role="group" aria-roledescription="slide" aria-label="3 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/PuntsInteres-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Puntos de interés
-</h5>
-</a>
-<a href="https://booking.visitlamassana.ad" className="relative mt-4 splide__slide is-visible" id="splide01-slide04" role="group" aria-roledescription="slide" aria-label="4 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Botiga-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Actividades
-</h5>
-</a>
-<a href="/agenda" className="relative mt-4 splide__slide is-visible" id="splide01-slide05" role="group" aria-roledescription="slide" aria-label="5 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Esdeveniments-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Agenda
-</h5>
-</a>
-<a href="/astroturisme" className="relative mt-4 splide__slide is-visible" id="splide01-slide06" role="group" aria-roledescription="slide" aria-label="6 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/AstroturismeIcon-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Astroturismo
-</h5>
-</a>
-<a href="/gastronomia" className="relative mt-4 splide__slide" id="splide01-slide07" role="group" aria-roledescription="slide" aria-label="7 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);" aria-hidden="true">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Gastronimia-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    Gastronomía
-</h5>
-</a>
-<a href="/laserenallamarket" className="relative mt-4 splide__slide" id="splide01-slide08" role="group" aria-roledescription="slide" aria-label="8 of 8" style="margin-right: 10px; width: calc(16.6667% - 8.33333px);" aria-hidden="true">
-<img loading="lazy" className="w-auto object-cover lg:aspect-square rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/laSerenalla-600.jpg">
-
-<h5 className="mt-2 flex items-center elip">
-                    La Serenalla Market
-</h5>
-</a> */
-}
-
-<article
-  className="my-2 splide splide-carousel-small splide-carousel-small-1 is-initialized splide--slide splide--ltr splide--draggable is-active"
-  id="splide01"
-  role="region"
-  aria-roledescription="carousel"
->
-  <div
-    className="splide__track splide__track--slide splide__track--ltr splide__track--draggable"
-    id="splide01-track"
-    style={{ paddingLeft: "0px", paddingRight: "30px" }}
-    aria-live="polite"
-    aria-atomic="true"
-  ></div>
-</article>;
+export default Carousel;

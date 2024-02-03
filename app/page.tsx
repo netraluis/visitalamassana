@@ -1,6 +1,6 @@
 import Logo from "./components/logos/logo";
 import Slider from "./components/slider/slider";
-import Carousel from "./components/slider/slider2";
+import Carousel from "./components/slider/slider";
 import VideoCover100 from "./components/videoCover100/videoCover100";
 
 export default function Home() {

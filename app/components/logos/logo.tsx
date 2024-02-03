@@ -28,7 +28,7 @@ const Logo = (props: LogoType) => {
       className=" object-cover aspect-square rounded-2xl border"
       src={props.src}
       // sizes="(min-width: 808px)"
-      style={{ marginRight: "10px", minWidth: "200px",height: '200px'  }}
+      style={{ minWidth: "200px",height: '200px'  }}
     />
 
     <h5 className="mt-2 flex items-center elip text-black">{props.text}</h5>
