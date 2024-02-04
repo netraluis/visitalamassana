@@ -173,11 +173,13 @@ const Slider = ({ title, text, children }: SliderType) => {
           </div>
         </section>
 
-        <section className="mb-8 container lg:max-w-full mx-auto px-2">
-          <article ref={articleRef} className="my-2 is-initialized is-active">
+        <section className="mb-8 lg:max-w-full mx-auto ">
+          <article
+            ref={carousel}
+            className="my-2 is-initialized is-active mx-2 overflow-hidden scroll-smooth cursor-grab"
+          >
             <div
-              ref={carousel}
-              className="relative gap-1 overflow-hidden scroll-smooth cursor-grab w-100 z-0"
+              className="relative container gap-1  w-100 z-0 mx-auto  "
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseUp}
