@@ -3,5 +3,4 @@ export interface LogoType {
   src: string;
   alt: string;
   text:string;
-  isAnchor: boolean;
 }

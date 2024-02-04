@@ -1,13 +1,61 @@
 "use client";
-import { useState, useRef, useEffect, useCallback, ReactNode } from "react";
+import { useState, useRef, useEffect, useCallback, use } from "react";
 import Logo from "../logos/logo";
 
-export interface SliderType {
-  title: string;
-  text: string;
-  children: ReactNode;
-}
-const Slider = ({ title, text, children }: SliderType) => {
+const logos = [
+  {
+    href: "/tracks",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Senderisme-600.jpg",
+    alt: "senderisme-600",
+    text: "Senderismo",
+  },
+  {
+    href: "/cicloturisme",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Cicloturisme-600.jpg",
+    alt: "cicloturisme-600",
+    text: "Cicloturismo",
+  },
+  {
+    href: "/tracks",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/PuntsInteres-600.jpg",
+    alt: "puntsInteres-600",
+    text: "Puntos de interés",
+  },
+  {
+    href: "https://booking.visitlamassana.ad",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Botiga-600.jpg",
+    alt: "botiga-600",
+    text: "Actividades",
+  },
+  {
+    href: "/agenda",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Esdeveniments-600.jpg",
+    alt: "esdeveniments-600",
+    text: "Agenda",
+  },
+  {
+    href: "/astroturisme",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/AstroturismeIcon-600.jpg",
+    alt: "astroturismeIcon-600",
+    text: "Astroturismo",
+  },
+  {
+    href: "/gastronomia",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/Gastronimia-600.jpg",
+    alt: "gastronimia-600",
+    text: "Gastronomía",
+  },
+  {
+    href: "/laserenallamarket",
+    src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pages/Explore/Images/laSerenalla-600.jpg",
+    alt: "laSerenalla-600",
+    text: "La Serenalla Market",
+  },
+];
+
+
+
+const Carousel = () => {
   const maxScrollWidth = useRef(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const carousel = useRef<any>(null);
@@ -59,6 +107,7 @@ const Slider = ({ title, text, children }: SliderType) => {
       : 0;
   }, []);
 
+
   const handleMouseDown = (e: any) => {
     e.preventDefault();
     setIsDragging(true);
@@ -68,7 +117,7 @@ const Slider = ({ title, text, children }: SliderType) => {
 
   const handleMouseUp = (e: any) => {
     setIsDragging(false);
-    const distance = e.clientX - startX;
+    const distance = e.clientX  - startX;
     if (Math.abs(distance) < 10) {
       return setIsAnchor(true);
     }
@@ -101,34 +150,28 @@ const Slider = ({ title, text, children }: SliderType) => {
     setStartX(e.touches[0].clientX);
     carousel.current.style.cursor = "grabbing";
   };
-  const handleTouchMove = (e: any) => {
+  const handleTouchMove = (e:any) => {
     const touchCoordinate = e.touches[0].clientX;
     setPosition((currentPosition) => {
       // const sliderWidth = carousel.current.offsetWidth;
       // para saber el ancho del contenedor para quitar las flechas
       let newPosition = currentPosition + (touchCoordinate - startX);
       if (newPosition > 0) {
-        setStartX(0);
+        setStartX(0)
         return 0;
       }
       if (-newPosition > maxScrollWidth.current) {
-        setStartX(-newPosition);
+        setStartX(-newPosition)
         return -maxScrollWidth.current;
       }
-      setStartX(touchCoordinate);
+      setStartX(touchCoordinate)
       return newPosition;
     });
   };
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: any) => {
     setIsDragging(false);
-  };
-
-  const anchorHandle = (e: any) => {
-    if (!isAnchor) {
-      e.preventDefault(); // Prevent the anchor tag from navigating if dragging has occurred
-    }
-  };
+  }
 
   return (
     <>
@@ -136,9 +179,9 @@ const Slider = ({ title, text, children }: SliderType) => {
         <section className="mt-8 container mx-auto px-2 lg:flex lg:justify-between lg:items-center">
           <div className="lg:max-w-[60%] mx-2 lg:mx-0">
             <h3 className="text-2xl font-pt font-bold mb-2 text-black">
-              {title}
+              Qué hacer en la Massana
             </h3>
-            <p>{text}</p>
+            <p></p>
           </div>
 
           <div className="hidden lg:block mb-2">
@@ -187,12 +230,22 @@ const Slider = ({ title, text, children }: SliderType) => {
               onTouchEnd={handleTouchEnd}
             >
               <div
-                onClick={anchorHandle}
                 ref={draggableRef}
                 className="flex "
-                style={{ transform: `translateX(${position}px)` }}
+                style={{ transform: `translateX(${position}px)`}}
               >
-                {children}
+                {logos.map((logo, index) => {
+                  return (
+                    <Logo
+                      key={index}
+                      href={logo.href}
+                      src={logo.src}
+                      alt={logo.alt}
+                      text={logo.text}
+                      // isAnchor={isAnchor}
+                    />
+                  );
+                })}
               </div>
             </div>
           </article>
@@ -202,4 +255,4 @@ const Slider = ({ title, text, children }: SliderType) => {
   );
 };
 
-export default Slider;
+export default Carousel;
