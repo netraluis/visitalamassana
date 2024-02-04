@@ -9,7 +9,6 @@ export interface SliderType {
 }
 const Slider = ({ title, text, children }: SliderType) => {
   const maxScrollWidth = useRef(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const carousel = useRef<any>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState(0);
@@ -17,41 +16,49 @@ const Slider = ({ title, text, children }: SliderType) => {
   const [startX, setStartX] = useState(0);
   const draggableRef = useRef<any>(null);
   const articleRef = useRef<any>(null);
+  const [isScrollingButton, setIsScrollingButton] = useState(false);
 
   const movePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevState) => prevState - 1);
-    }
+    setIsScrollingButton(true);
+
+    setPosition((currentPosition) => {
+      // const sliderWidth = carousel.current.offsetWidth;
+      // para saber el ancho del contenedor para quitar las flechas
+      let newPosition = currentPosition - 150;
+      if (-newPosition >= maxScrollWidth.current) {
+        return -maxScrollWidth.current;
+      }
+      return newPosition;
+    });
   };
 
   const moveNext = () => {
-    if (
-      carousel.current !== null &&
-      carousel.current.offsetWidth * currentIndex <= maxScrollWidth.current
-    ) {
-      setCurrentIndex((prevState) => prevState + 1);
-    }
+    setIsScrollingButton(true);
+
+    setPosition((currentPosition) => {
+      // const sliderWidth = carousel.current.offsetWidth;
+      // para saber el ancho del contenedor para quitar las flechas
+      let newPosition = currentPosition + 150;
+      if (newPosition >= 0) {
+        return 0;
+      }
+      return newPosition;
+    });
   };
 
   const isDisabled = (direction: any) => {
-    if (direction === "prev") {
-      return currentIndex <= 0;
-    }
+    // if (direction === "prev") {
+    //   return currentIndex <= 0;
+    // }
 
-    if (direction === "next" && carousel.current !== null) {
-      return (
-        carousel.current.offsetWidth * currentIndex >= maxScrollWidth.current
-      );
-    }
+    // if (direction === "next" && carousel.current !== null) {
+    //   return (
+    //     carousel.current.offsetWidth * currentIndex >= maxScrollWidth.current
+    //   );
+    // }
 
     return false;
   };
-
-  useEffect(() => {
-    if (carousel !== null && carousel.current !== null) {
-      carousel.current.scrollLeft = carousel.current.offsetWidth * currentIndex;
-    }
-  }, [currentIndex]);
 
   useEffect(() => {
     maxScrollWidth.current = carousel.current
@@ -60,6 +67,7 @@ const Slider = ({ title, text, children }: SliderType) => {
   }, []);
 
   const handleMouseDown = (e: any) => {
+    setIsScrollingButton(false);
     e.preventDefault();
     setIsDragging(true);
     setStartX(e.clientX);
@@ -83,10 +91,10 @@ const Slider = ({ title, text, children }: SliderType) => {
           // const sliderWidth = carousel.current.offsetWidth;
           // para saber el ancho del contenedor para quitar las flechas
           let newPosition = currentPosition + e.movementX;
-          if (newPosition > 0) {
+          if (newPosition >= 0) {
             return 0;
           }
-          if (-newPosition > maxScrollWidth.current) {
+          if (-newPosition >= maxScrollWidth.current) {
             return -maxScrollWidth.current;
           }
           return newPosition;
@@ -97,6 +105,7 @@ const Slider = ({ title, text, children }: SliderType) => {
   );
 
   const handleTouchStart = (e: any) => {
+    setIsScrollingButton(false);
     setIsDragging(true);
     setStartX(e.touches[0].clientX);
     carousel.current.style.cursor = "grabbing";
@@ -107,11 +116,11 @@ const Slider = ({ title, text, children }: SliderType) => {
       // const sliderWidth = carousel.current.offsetWidth;
       // para saber el ancho del contenedor para quitar las flechas
       let newPosition = currentPosition + (touchCoordinate - startX);
-      if (newPosition > 0) {
+      if (newPosition >= 0) {
         setStartX(0);
         return 0;
       }
-      if (-newPosition > maxScrollWidth.current) {
+      if (-newPosition >= maxScrollWidth.current) {
         setStartX(-newPosition);
         return -maxScrollWidth.current;
       }
@@ -130,6 +139,8 @@ const Slider = ({ title, text, children }: SliderType) => {
     }
   };
 
+  console.log("maxScrollWidth", maxScrollWidth.current, position);
+
   return (
     <>
       <div className="lg:my-12">
@@ -138,38 +149,42 @@ const Slider = ({ title, text, children }: SliderType) => {
             <h3 className="text-2xl font-pt font-bold mb-2 text-black">
               {title}
             </h3>
-            <p>{text}</p>
+            <p className="text-black">{text}</p>
           </div>
 
           <div className="hidden lg:block mb-2">
-            <button
-              onClick={movePrev}
-              disabled={isDisabled("prev")}
-              id="splide-carousel-1--previous-btn"
-              className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2"
-              type="button"
-              aria-label="Next slide"
-              aria-controls="splide04-track"
-            >
-              <img
-                src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-                className="w-auto h-4 w-full"
-              />
-            </button>
-            <button
-              disabled={isDisabled("next")}
-              onClick={moveNext}
-              id="splide-carousel-1--next-btn"
-              className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5"
-              type="button"
-              aria-label="Next slide"
-              aria-controls="splide04-track"
-            >
-              <img
-                src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-                className="w-auto h-4 w-full rotate-180"
-              />
-            </button>
+            {maxScrollWidth.current !== -position && (
+              <button
+                onClick={movePrev}
+                disabled={isDisabled("prev")}
+                id="splide-carousel-1--previous-btn"
+                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2"
+                type="button"
+                aria-label="Next slide"
+                aria-controls="splide04-track"
+              >
+                <img
+                  src="https://www.visitlamassana.ad/img/arrow-slider.svg"
+                  className="w-auto h-4 w-full"
+                />
+              </button>
+            )}
+            {position !== 0 && (
+              <button
+                disabled={isDisabled("next")}
+                onClick={moveNext}
+                id="splide-carousel-1--next-btn"
+                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5"
+                type="button"
+                aria-label="Next slide"
+                aria-controls="splide04-track"
+              >
+                <img
+                  src="https://www.visitlamassana.ad/img/arrow-slider.svg"
+                  className="w-auto h-4 w-full rotate-180"
+                />
+              </button>
+            )}
           </div>
         </section>
 
@@ -179,7 +194,7 @@ const Slider = ({ title, text, children }: SliderType) => {
             className="my-2 is-initialized is-active mx-2 overflow-hidden scroll-smooth cursor-grab"
           >
             <div
-              className="relative container gap-1  w-100 z-0 mx-auto  "
+              className="relative container gap-1  w-100 z-0 mx-auto scroll-smooth  "
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseUp}
@@ -191,8 +206,13 @@ const Slider = ({ title, text, children }: SliderType) => {
               <div
                 onClick={anchorHandle}
                 ref={draggableRef}
-                className="flex "
-                style={{ transform: `translateX(${position}px)` }}
+                className="flex scroll-smooth "
+                style={{
+                  transform: `translateX(${position}px)`,
+                  transition: `${
+                    isScrollingButton ? "transform 0.5s ease-in-out" : ""
+                  }`,
+                }}
               >
                 {children}
               </div>
