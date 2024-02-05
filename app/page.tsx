@@ -218,15 +218,6 @@ const logos = [
   },
 ];
 
-export interface PhotoCardType {
-  typeActivity: string;
-  text: string;
-  poster: string;
-  src: string;
-  href: string;
-}
-
-
 export default function Home() {
   return (
     <>

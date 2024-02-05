@@ -17,6 +17,7 @@ const Slider = ({ title, text, children }: SliderType) => {
   const draggableRef = useRef<any>(null);
   const articleRef = useRef<any>(null);
   const [isScrollingButton, setIsScrollingButton] = useState(false);
+  const [showArrows, setShowArrows] = useState(false);
 
   const movePrev = () => {
     setIsScrollingButton(true);
@@ -64,7 +65,10 @@ const Slider = ({ title, text, children }: SliderType) => {
     maxScrollWidth.current = carousel.current
       ? carousel.current.scrollWidth - carousel.current.offsetWidth
       : 0;
-  }, []);
+      setShowArrows(maxScrollWidth.current > 0);
+  }, [carousel.current]);
+
+
 
   const handleMouseDown = (e: any) => {
     setIsScrollingButton(false);
@@ -139,7 +143,7 @@ const Slider = ({ title, text, children }: SliderType) => {
     }
   };
 
-  console.log("maxScrollWidth", maxScrollWidth.current, position);
+  console.log('server',"position", position, "maxScrollWidth", maxScrollWidth.current);
 
   return (
     <>
@@ -149,39 +153,39 @@ const Slider = ({ title, text, children }: SliderType) => {
             <h3 className="text-2xl font-pt font-bold mb-2 text-black">
               {title}
             </h3>
-            <p className="text-black">{text}</p>
+            <p className="text-black">{maxScrollWidth.current }</p>
           </div>
 
-          <div className="hidden lg:block mb-2">
-            {maxScrollWidth.current !== -position && (
+          <div className="hidden lg:block mb-2  relative w-[100px] h-[60px]">
+            {(maxScrollWidth.current > -position || maxScrollWidth.current === 0) && showArrows && (
               <button
                 onClick={movePrev}
                 disabled={isDisabled("prev")}
                 id="splide-carousel-1--previous-btn"
-                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2"
+                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 mr-2 absolute left-1 top-0"
                 type="button"
                 aria-label="Next slide"
                 aria-controls="splide04-track"
               >
                 <img
                   src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-                  className="w-auto h-4 w-full"
+                  className="w-auto h-4 w-full relative"
                 />
               </button>
             )}
-            {position !== 0 && (
+            {position < 0 && showArrows &&(
               <button
                 disabled={isDisabled("next")}
                 onClick={moveNext}
                 id="splide-carousel-1--next-btn"
-                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5"
+                className="border border-gray-5 py-3 px-4 rounded-full hover:bg-gray-5 absolute right-1 top-0 "
                 type="button"
                 aria-label="Next slide"
                 aria-controls="splide04-track"
               >
                 <img
                   src="https://www.visitlamassana.ad/img/arrow-slider.svg"
-                  className="w-auto h-4 w-full rotate-180"
+                  className="w-auto h-4 w-full rotate-180 relative"
                 />
               </button>
             )}
