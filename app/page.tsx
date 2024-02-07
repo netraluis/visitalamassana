@@ -1,6 +1,6 @@
-import { text } from "stream/consumers";
 import Logo from "./components/logos/logo";
 import PhotoCard from "./components/photoCard/photoCard";
+import PhotoFiveGroup, { PhotoFiveGroupType } from "./components/photoFiveGroup/photoFiveGroup";
 import Slider from "./components/slider/slider";
 
 import VideoCover100 from "./components/videoCover100/videoCover100";
@@ -69,104 +69,6 @@ const photoCard = [
   
 ];
 
-{
-  /* <ul class="splide__list" id="splide02-list" role="presentation" style="transform: translateX(0px);">
-                                        
-                                            <a href="/pois/museu-comic" class="relative mt-4 splide__slide" id="splide02-slide04" role="group" aria-roledescription="slide" aria-label="4 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" 
-                            src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/b52ec6c2-de3a-441c-aa7d-6709eff8610b/DSC00272-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Museu, Patrimoni Cultural
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">La Massana Còmic</h5>
-                            </div>
-                        </a>
-                                            <a href="/tracks/MONT113" class="relative mt-4 splide__slide" id="splide02-slide05" role="group" aria-roledescription="slide" aria-label="5 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Routes/MONT113/Waypoints/439-IMG_2958-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Senderisme
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Camí Ral de la Massana</h5>
-                            </div>
-                        </a>
-                                            <a href="/pois/estany-truites" class="relative mt-4 splide__slide" id="splide02-slide06" role="group" aria-roledescription="slide" aria-label="6 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/ec4929ee-b936-43a9-b734-670a2ba8fa14/DJI_0307-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Llac, Patrimoni Natural
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Estany de les Truites</h5>
-                            </div>
-                        </a>
-                                            <a href="/pois/museu-comic" class="relative mt-4 splide__slide" id="splide02-slide07" role="group" aria-roledescription="slide" aria-label="7 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/9150d528-4579-4ff4-88c6-fa65c20233e0/DSC07933-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Berenador
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Berenador de Beixalís</h5>
-                            </div>
-                        </a>
-                                            <a href="/pois/berques-arinsal" class="relative mt-4 splide__slide" id="splide02-slide08" role="group" aria-roledescription="slide" aria-label="8 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/6c18ec37-37f4-4896-b52f-424ec01de700/DJI_0539-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Equipament Esportiu
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Les Berques d’Arinsal</h5>
-                            </div>
-                        </a>
-                                            <a href="/pois/escapeland-la-massana" class="relative mt-4 splide__slide" id="splide02-slide09" role="group" aria-roledescription="slide" aria-label="9 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/a4020a5c-ee22-4477-ae25-4fcb0b666ffe/DSC02513-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Activitat
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Escapeland La Massana</h5>
-                            </div>
-                        </a>
-                                            <a href="/pois/escape-els-passadors" class="relative mt-4 splide__slide" id="splide02-slide10" role="group" aria-roledescription="slide" aria-label="10 of 10" style="margin-right: 10px; width: calc(50% - 5px);" aria-hidden="true">
-                            <img loading="lazy" class="h-[410px] lg:h-[360px] w-full object-cover rounded-2xl" src="https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/926752df-166c-45fd-b7a1-71293e07feae/DSC08748-600.jpg">
-
-                            
-                            <div class="absolute top-4 left-4 rounded-xl bg-black bg-opacity-40 py-2 px-4 text-sm text-white">
-                                Activitat
-                            </div>
-
-                            <div class="absolute h-[60px] w-full bottom-0 bg-gradient-to-t from-black/40 rounded-b-2xl flex items-start px-4 ">
-                                
-                                                                <h5 class="text-white font-bold">Escape Els Passadors</h5>
-                            </div>
-                        </a>
-                                    </ul> */
-}
-
 const logos = [
   {
     href: "/tracks",
@@ -218,6 +120,38 @@ const logos = [
   },
 ];
 
+const firtsPhotoFiveGroup: PhotoFiveGroupType = {
+  // photoFiveGroup: {
+    principalPhoto: {
+      title: "Escapeland La Massana",
+      src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/a4020a5c-ee22-4477-ae25-4fcb0b666ffe/DSC02513-1900.jpg",
+      href: "/pois/escapeland-la-massana"
+    },
+    groupPhotos: [
+      {
+        title: "Escape Els Passadors",
+        src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/926752df-166c-45fd-b7a1-71293e07feae/DSC08748-600.jpg",
+        href:"/pois/escape-els-passadors"
+      },
+      {
+        title: "Escape Borís I, Rei d'Andorra",
+        src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/f79167af-bc79-4c64-9871-3c592801225c/DSC08831-600.jpg",
+        href:"/pois/escape-rei-boris"
+      },
+      {
+        title: "Banys de Bosc",
+        src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/5a07639c-9f6f-4159-bc01-61603c8a56b9/DSC08391-600.jpg",
+        href:"/pois/banys-de-bosc"
+      },
+      {
+        title: "Spa & Wellness",
+        src: "https://d58uieioun6fz.cloudfront.net/thumbnails/Pois/6323cdb8-705e-4b6a-aa01-c3ed44c76bfe/DSC08636-600.jpg",
+        href:"/pois/spa-wellness"
+      },
+    ],
+  // }
+};
+
 export default function Home() {
   return (
     <>
@@ -258,6 +192,10 @@ export default function Home() {
               />
             );
           })}
+        </Slider>
+
+        <Slider title='Experiencias' text='Os proponemos juegos y recorridos temáticos de distintos niveles de dificultad para redescubrir la parroquia de la Massana. ¡Se puede hacer en familia, con los amigos y en pareja! Todos los juegos de escapegame en el exterior, se inspiran en hechos reales. Además, disfruta de la naturaleza y relájate con los baños de bosque.'>
+          <PhotoFiveGroup   principalPhoto={firtsPhotoFiveGroup.principalPhoto} groupPhotos={firtsPhotoFiveGroup.groupPhotos} />
         </Slider>
       </div>
     </>

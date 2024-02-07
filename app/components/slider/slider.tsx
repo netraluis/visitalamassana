@@ -153,7 +153,7 @@ const Slider = ({ title, text, children }: SliderType) => {
             <h3 className="text-2xl font-pt font-bold mb-2 text-black">
               {title}
             </h3>
-            <p className="text-black">{maxScrollWidth.current }</p>
+            <p className="text-black">{text}</p>
           </div>
 
           <div className="hidden lg:block mb-2  relative w-[100px] h-[60px]">
