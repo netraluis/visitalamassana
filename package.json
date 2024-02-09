@@ -9,16 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
+    "@headlessui/react": "^0.0.0-insiders.08baf09",
     "@heroicons/react": "^2.1.1",
-    "@splidejs/react-splide": "^0.7.12",
-    "next": "14.1.0",
+    "i": "^0.3.7",
+    "mapbox-gl": "^3.1.2",
+    "next": "^14.1.0",
+    "npm": "^10.4.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sharp": "^0.33.2"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
+    "@types/react": "^18.2.55",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",

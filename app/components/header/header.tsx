@@ -1,19 +1,85 @@
-import React, { Fragment } from "react";
-import { Popover, Transition } from '@headlessui/react'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+"use client";
+import { useEffect, useRef, useState } from "react";
 import {
-  ArrowPathIcon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
-} from '@heroicons/react/24/outline'
+  Bars3Icon,
+  InformationCircleIcon,
+  ChatBubbleLeftRightIcon,
+  CalendarIcon,
+  MapIcon,
+  UserPlusIcon,
+  UserIcon,
+  ListBulletIcon,
+} from "@heroicons/react/20/solid";
 
-interface HeaderProps {
-  // Add any props you need for the Header component
-}
+const solutions = [
+  {
+    name: "Rutas y puntos de interés",
+    description: "Get a better understanding of your traffic",
+    href: "https://www.visitlamassana.ad/es/tracks",
+    icon: MapIcon,
+  },
+  {
+    name: "Agenda y eventos",
+    description: "Speak directly to your customers",
+    href: "https://www.visitlamassana.ad/es/agenda",
+    icon: CalendarIcon,
+  },
+  {
+    name: "Actividades",
+    description: "Your customers' data will be safe and secure",
+    href: "https://booking.visitlamassana.ad/",
+    icon: ListBulletIcon,
+  },
+  {
+    name: "Información de interés",
+    description: "Connect with third-party tools",
+    href: "https://www.visitlamassana.ad/es/information",
+    icon: InformationCircleIcon,
+  },
+  {
+    name: "Contacto",
+    description: "Build strategic funnels that will convert",
+    href: "https://www.visitlamassana.ad/es/contact",
+    icon: ChatBubbleLeftRightIcon,
+  },
+];
+const callsToAction = [
+  { name: "Registrarse", href: "#", icon: UserPlusIcon },
+  { name: "Iniciar Sesión", href: "#", icon: UserIcon },
+];
 
-const Header: React.FC<HeaderProps> = () => {
+export default function Header() {
+  const [isVisible, setIsVisible] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Función para verificar si el clic fue fuera del ref (dropdownRef)
+    const handleClickOutside = (event: MouseEvent) => {
+
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)&&
+      buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+        setIsVisible(false);
+      }
+    };
+
+    // Agregar el event listener cuando el componente se monta
+    console.log({isVisible})
+    if(isVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // Limpiar el event listener cuando el componente se desmonta
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isVisible]);
+
+  const toggleMenu = (event: React.MouseEvent) => {
+    // event.stopPropagation();
+    setIsVisible(!isVisible);
+  };
+
   return (
     <header className="px-3 mx-auto flex lg:grid lg:grid-cols-3 lg:justify-between items-center py-4 sticky top-0 border-b border-b-gray-6 bg-white z-50">
       <div>
@@ -23,7 +89,7 @@ const Header: React.FC<HeaderProps> = () => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 28 33"
           >
-            <g fill="none" fill-rule="evenodd">
+            <g fill="none" fillRule="evenodd">
               <path
                 d="M14.034 3.799s3.246-2.478 6.085.809c2.346 2.709 4.792 8.368 5.188 11.605.385 3.232-4.41 9.978-9.59 13.354-5.186 3.369-9.59-3.376-11.531-6.475-1.946-3.106-4.41-7.29 9.848-19.293"
                 fill="#00B9E1"
@@ -270,89 +336,62 @@ const Header: React.FC<HeaderProps> = () => {
       </div>
       <div className="justify-self-end lg:p-3 flex items-center">
         <button
-          data-dropdown-toggle="dropdown"
-          className="border border-[#E5E5EA] hover:border-black rounded-full font-medium flex items-center py-2.5 px-4 !lg:p-0"
+          ref={buttonRef}
+          onClick={toggleMenu}
+          className="border border-[#E5E5EA] hover:border-black hover:bg-red rounded-full font-medium flex items-center py-2.5 px-4 !lg:p-0"
         >
-          <svg
-            className="w-6 h-6 "
-            fill="none"
-            stroke="black"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
+          <Bars3Icon className="h-6 w-6 text-black" aria-hidden="true" />
         </button>
 
-        {/* <!-- Dropdown menu -->
-            <div id="dropdown" className="z-50 hidden w-96 mr-4 bg-transparent p-4" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(1480px, 6789px);" data-popper-placement="bottom">
-              <div className="bg-white p-6 dark:bg-gray-700 rounded-lg divide-y divide-gray-5 divide-y divide-gray-100" style="box-shadow: 1px 1px 25px -11px black;">
-                <div className="mb-6">
-                    <button onclick="Livewire.emit('openModal', 'modals.register-component')" className="rounded-full py-2.5 w-full flex items-center justify-center border bg-accent text-white">
-                        <span className="ml-2">Registrarse</span>
-                    </button>
-                    <button onclick="Livewire.emit('openModal', 'modals.login-component')" className="rounded-full py-2.5 w-full flex items-center justify-center border bg-white border-black mt-3">
-                        <span className="ml-2">Iniciar sesión</span>
-                    </button>
+        {isVisible && (
+          <div className="relative" ref={dropdownRef}>
+            <div className="absolute right-0 z-10 mt-5 flex w-screen max-w-max px-4 top-1">
+              <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+                <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50 ">
+                  {callsToAction.map((item) => (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      className="flex items-center justify-center gap-x-2.5 p-3 font-semibold  text-gray-900  hover:bg-gray-100 hover:text-cyan-500"
+                    >
+                      <item.icon
+                        className="h-5 w-5 flex-none text-gray-400 "
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </a>
+                  ))}
                 </div>
-                <div>
-                  <a href="https://www.visitlamassana.ad/es/tracks" className="flex items-center hover:bg-gray-6 py-2 px-4 rounded mt-3">
-                      <img className="w-4 mr-3" src="https://www.visitlamassana.ad/img/route.svg" alt=""/>
-                      Rutas y puntos de interés                            </a>
-                  <a href="https://www.visitlamassana.ad/es/agenda" className="flex items-center hover:bg-gray-6 py-2 px-4 rounded mt-3">
-                      <svg className="w-4 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 18"><g fill="none" fill-rule="evenodd" stroke="#000" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" transform="translate(1 1.2)"><rect width="14.4" height="14.4" y="1.6" rx="2"></rect><path d="M10.4 0v3.2M4 0v3.2M0 6.4h14.4"></path></g></svg>
-                      Agenda y eventos                            </a>
-                  <a href="https://booking.visitlamassana.ad/" target="_blank" className="flex items-center hover:bg-gray-6 py-2 px-4 rounded mt-3">
-                      <svg className="w-4 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19"><path d="m1.477 11.086 6.257 6.258c.578.578 1.154.87 1.727.875.573.005 1.146-.279 1.719-.852l6.289-6.297c.573-.567.857-1.139.851-1.715-.005-.575-.297-1.152-.875-1.73l-6.25-6.25C10.617.797 10.042.505 9.47.5c-.573-.005-1.146.279-1.719.852L1.453 7.64C.88 8.219.596 8.793.601 9.363c.006.57.297 1.145.876 1.723Zm.906-.867c-.276-.281-.417-.568-.422-.86-.005-.291.138-.58.43-.867L8.594 2.29c.286-.286.575-.43.867-.43.292 0 .578.141.86.422L16.538 8.5c.276.276.417.561.422.855.005.295-.138.585-.43.872l-6.203 6.203c-.292.286-.583.43-.875.43-.292 0-.575-.139-.851-.415l-6.22-6.226Zm8.922 3.898c.125 0 .237-.039.336-.117.099-.078.148-.193.148-.344a.723.723 0 0 0-.086-.343l-.93-1.875a2.017 2.017 0 0 0-.14-.254c-.047-.07-.089-.135-.125-.192l-.555-.789.047-.125c.083-.24.146-.45.187-.633.042-.182.07-.39.086-.625l.086-1.25c.026-.338-.053-.626-.238-.863s-.465-.355-.84-.355c-.24 0-.474.058-.703.175-.229.118-.46.293-.695.528l-.719.687c-.12.12-.202.233-.246.34a1.386 1.386 0 0 0-.09.387l-.094 1.047a.5.5 0 0 0 .106.375c.08.093.194.145.34.156.291.02.453-.138.484-.477l.094-1.117.383-.344c.062-.046.12-.057.171-.03.053.025.076.08.07.163l-.07.961c-.02.26.02.488.122.684.101.195.217.37.347.527l.906 1.14a1.126 1.126 0 0 1 .141.227l1 2.024a.516.516 0 0 0 .195.234.52.52 0 0 0 .282.078Zm-4.25.008a.46.46 0 0 0 .375-.172l1.43-1.695c.077-.094.128-.158.152-.192a.575.575 0 0 0 .066-.175l.078-.336-.789-.992-.226 1.109-1.32 1.562a2.1 2.1 0 0 0-.145.196.433.433 0 0 0-.067.242c0 .135.042.245.125.328.084.083.19.125.32.125Zm4.507-5.031h1.11c.167 0 .294-.043.383-.13a.452.452 0 0 0 .132-.339.455.455 0 0 0-.132-.336c-.089-.088-.216-.133-.383-.133H11.5l-.734-.804-.086 1.21.32.329c.135.135.323.203.562.203ZM9.875 5.977a.992.992 0 0 0 .723-.297c.2-.198.3-.433.3-.703 0-.287-.1-.53-.3-.727a.992.992 0 0 0-.723-.297.966.966 0 0 0-.715.297.995.995 0 0 0-.293.727c0 .27.098.505.293.703a.966.966 0 0 0 .715.297Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      Actividades                            </a>
-                  <a href="https://www.visitlamassana.ad/es/information" className="flex items-center hover:bg-gray-6 py-2 px-4 rounded mt-3">
-                      <svg className="w-4 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17"><path d="M8.367 16.328a7.644 7.644 0 0 0 3.074-.625 8.146 8.146 0 0 0 2.543-1.726 8.146 8.146 0 0 0 1.727-2.543c.417-.961.625-1.986.625-3.075a7.644 7.644 0 0 0-.625-3.074 8.146 8.146 0 0 0-1.727-2.543 8.133 8.133 0 0 0-2.546-1.726A7.672 7.672 0 0 0 8.359.39a7.644 7.644 0 0 0-3.074.625 8.179 8.179 0 0 0-4.262 4.27 7.644 7.644 0 0 0-.625 3.073c0 1.089.209 2.114.625 3.075.417.96.993 1.808 1.727 2.543a8.146 8.146 0 0 0 2.543 1.726c.96.417 1.986.625 3.074.625Zm0-1.328a6.495 6.495 0 0 1-2.586-.516 6.68 6.68 0 0 1-2.113-1.425 6.627 6.627 0 0 1-1.422-2.114 6.538 6.538 0 0 1-.512-2.586c0-.921.17-1.783.512-2.586a6.705 6.705 0 0 1 1.418-2.117A6.538 6.538 0 0 1 8.36 1.718c.922 0 1.784.171 2.586.512a6.694 6.694 0 0 1 3.547 3.543c.344.803.516 1.665.516 2.586 0 .922-.17 1.784-.512 2.586a6.627 6.627 0 0 1-1.422 2.114 6.668 6.668 0 0 1-2.117 1.425 6.523 6.523 0 0 1-2.59.516ZM7 12.656h3.18a.566.566 0 0 0 .406-.156.517.517 0 0 0 .164-.39.517.517 0 0 0-.164-.391.566.566 0 0 0-.406-.156h-.97V7.585c0-.214-.051-.384-.155-.512-.104-.127-.256-.191-.453-.191h-1.47a.566.566 0 0 0-.405.156.517.517 0 0 0-.164.39c0 .157.054.287.164.391.109.104.244.157.406.157h.836v3.585H7a.566.566 0 0 0-.406.157.517.517 0 0 0-.164.39c0 .157.054.287.164.391.11.104.245.156.406.156Zm1.297-7.078a.975.975 0 0 0 .723-.297.986.986 0 0 0 .293-.718.995.995 0 0 0-.293-.727.975.975 0 0 0-.723-.297.979.979 0 0 0-.719.297.988.988 0 0 0-.297.727c0 .28.1.52.297.718a.979.979 0 0 0 .719.297Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      Informació d'Interès                            </a>
-                  <a href="https://www.visitlamassana.ad/es/contact" className="flex items-center hover:bg-gray-6 py-2 px-4 rounded mt-3">
-                      <svg className="w-4 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 19"><path d="M6.266 17.945c.203 0 .39-.041.562-.125.172-.083.383-.234.633-.453l3.281-2.937-.906-.875-3.25 3v-2.227c0-.224-.059-.39-.176-.496a.62.62 0 0 0-.433-.16H4.453c-.693 0-1.233-.186-1.621-.559-.388-.372-.582-.923-.582-1.652V4.344c0-.73.194-1.282.582-1.657.388-.374.928-.562 1.621-.562h11.024c.692 0 1.233.188 1.62.563.389.374.583.927.583 1.656v1.101h1.258v-1.14c0-.709-.135-1.313-.403-1.813a2.704 2.704 0 0 0-1.16-1.144c-.505-.263-1.112-.395-1.82-.395H4.375c-.677 0-1.27.132-1.777.395a2.818 2.818 0 0 0-1.184 1.144c-.281.5-.422 1.104-.422 1.813V11.5c0 .708.14 1.311.422 1.809.281.497.676.879 1.184 1.144.507.266 1.1.399 1.777.399h1.031v2.132c0 .302.074.538.223.707.148.17.36.254.637.254Zm12.726.875c.271 0 .48-.088.625-.265.146-.177.219-.414.219-.711v-1.875h.328c.651 0 1.221-.127 1.711-.38a2.73 2.73 0 0 0 1.145-1.1c.273-.482.41-1.065.41-1.747V8.125c0-.682-.137-1.264-.41-1.746a2.73 2.73 0 0 0-1.145-1.102c-.49-.252-1.06-.379-1.71-.379h-7.587c-.682 0-1.267.127-1.754.38-.487.252-.86.62-1.117 1.1-.258.483-.387 1.065-.387 1.747v4.617c0 .682.13 1.265.387 1.746.258.482.63.85 1.117 1.102.487.252 1.072.379 1.754.379h2.695l2.61 2.234c.24.203.437.357.594.461a.91.91 0 0 0 .515.156Zm-.328-1.414-2.508-2.25a1.639 1.639 0 0 0-.422-.281 1.35 1.35 0 0 0-.507-.078h-2.57c-.652 0-1.162-.176-1.532-.527-.37-.352-.555-.874-.555-1.567l.008-4.539c0-.687.184-1.208.55-1.562.368-.355.877-.532 1.528-.532h7.438c.65 0 1.16.177 1.527.532.367.354.55.875.55 1.562v4.54c0 .692-.184 1.214-.554 1.566-.37.351-.877.527-1.523.527h-.828a.628.628 0 0 0-.426.152c-.117.102-.176.265-.176.489v1.968Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      Contacto                            </a>
-                </div>
-                <div className="mt-5 pt-3">
-                  <a id="dropdownLanguage" data-dropdown-toggle="dropdownLanguageDiv" className="flex items-center cursor-pointer py-2 px-4 text-black rounded mt-1" type="button">
-                      <svg className="w-4 mr-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17"><defs><clipPath id="a"><path d="M1280 0v1024H0V0h1280Z"></path></clipPath><clipPath id="b"><path d="M7.96 0c1.09 0 2.116.208 3.08.625a8.133 8.133 0 0 1 2.546 1.727 8.146 8.146 0 0 1 1.726 2.543c.417.96.626 1.985.626 3.074a7.644 7.644 0 0 1-.626 3.074 8.146 8.146 0 0 1-1.726 2.543 8.146 8.146 0 0 1-2.543 1.726 7.644 7.644 0 0 1-3.074.626 7.644 7.644 0 0 1-3.074-.626 8.146 8.146 0 0 1-2.543-1.726 8.146 8.146 0 0 1-1.727-2.543A7.644 7.644 0 0 1 0 7.969C0 6.88.208 5.855.625 4.895A8.179 8.179 0 0 1 4.887.625 7.644 7.644 0 0 1 7.96 0ZM4.743 12.369l-.082.026-.297.109c-.481.19-.894.42-1.238.691l.199-.147.02.02c.496.45 1.046.825 1.653 1.122l.308.142c.208.09.42.17.635.238l.136.038-.147-.156a5.375 5.375 0 0 1-.607-.846l-.138-.247a7.98 7.98 0 0 1-.423-.935l-.019-.055Zm6.453 0-.019.055a7.98 7.98 0 0 1-.422.935 5.646 5.646 0 0 1-.746 1.093l-.148.156.138-.038c.107-.034.214-.071.32-.11l.315-.128a7.07 7.07 0 0 0 2.203-1.496l-.224.212-.014-.01a4.873 4.873 0 0 0-.743-.415l-.28-.12a6.345 6.345 0 0 0-.297-.108l-.083-.026Zm-3.735-.43-.317.014c-.4.023-.783.063-1.147.121l-.235.042.054.145.13.313c.271.612.581 1.094.93 1.446.174.175.353.307.535.395l.05.021v-2.497Zm1.024 0v2.494l.043-.018c.137-.066.272-.157.404-.272l.132-.123c.348-.352.658-.834.93-1.446.044-.102.088-.206.13-.313l.052-.146-.234-.04a11.568 11.568 0 0 0-1.147-.122l-.31-.014ZM4.03 8.476H1.082l.014.19c.057.572.184 1.122.382 1.652l.127.315a7.13 7.13 0 0 0 .84 1.446l.181.23.11-.081c.217-.152.46-.294.731-.425l.28-.127a7.81 7.81 0 0 1 .598-.229l.096-.03-.016-.06-.093-.384a12.807 12.807 0 0 1-.283-2.085l-.019-.412Zm10.825 0h-2.949l-.017.412c-.034.59-.1 1.152-.202 1.688l-.082.397c-.029.13-.06.258-.092.384l-.018.06.097.03a8.1 8.1 0 0 1 .306.11l.293.119c.384.165.72.349 1.01.552l.11.081.182-.23c.267-.354.499-.734.697-1.138l.142-.308c.272-.625.441-1.28.51-1.967l.013-.19Zm-7.395 0H5.079l.017.369c.026.422.072.834.137 1.235l.072.397c.026.13.053.26.083.386l.071.288.229-.046c.43-.08.877-.135 1.338-.167l.434-.022v-2.44Zm3.397 0H8.484v2.44l.427.022c.308.021.609.053.903.096l.436.071.227.046.073-.288.083-.386c.104-.525.173-1.069.208-1.632l.016-.369ZM2.605 3.651l-.162.207a7.171 7.171 0 0 0-.838 1.447 6.516 6.516 0 0 0-.509 1.967l-.014.181h2.95l.017-.373c.033-.59.1-1.155.201-1.693l.082-.399c.03-.131.06-.26.093-.386l.011-.045-.09-.028a8.1 8.1 0 0 1-.306-.11l-.294-.118a5.637 5.637 0 0 1-1.01-.552l-.131-.098ZM5.45 4.823l-.062.252-.083.39c-.104.53-.174 1.08-.209 1.65l-.016.338h2.38V5.06l-.434-.022a12.186 12.186 0 0 1-.902-.095l-.436-.072-.238-.048Zm5.037 0-.237.048c-.431.08-.877.136-1.339.167l-.427.022v2.393h2.372l-.015-.339a12.732 12.732 0 0 0-.137-1.248l-.071-.401a12.635 12.635 0 0 0-.083-.39l-.063-.252Zm2.842-1.17-.127.096c-.29.203-.627.387-1.01.552a7.81 7.81 0 0 1-.6.228l-.087.027.012.046.092.386c.145.657.239 1.354.28 2.092l.015.373h2.95l-.013-.181a6.531 6.531 0 0 0-.382-1.652l-.127-.315a7.088 7.088 0 0 0-.84-1.447l-.163-.205ZM7.46 1.501l-.05.021c-.182.088-.36.22-.535.396-.349.352-.659.832-.93 1.441a7.772 7.772 0 0 0-.13.313l-.07.185.251.045c.364.058.746.099 1.147.122l.317.013V1.501Zm1.024.003v2.533l.31-.013c.267-.016.526-.039.777-.07l.37-.052.25-.045-.068-.185-.13-.313c-.272-.609-.582-1.09-.93-1.441a1.969 1.969 0 0 0-.536-.396l-.043-.018ZM6.08 1.325l-.148.043a7.023 7.023 0 0 0-2.834 1.734l.2-.194.042.03c.222.154.47.292.742.416l.281.119c.097.038.195.074.297.108l.073.023.027-.074a8.43 8.43 0 0 1 .27-.642l.15-.298c.224-.425.472-.79.742-1.096l.158-.169Zm3.783.006.153.163c.27.306.52.671.746 1.096.155.291.295.604.421.94l.026.072.069-.02.296-.11c.482-.19.895-.42 1.239-.69l-.18.13-.045-.042a7.09 7.09 0 0 0-1.655-1.122l-.308-.143c-.208-.09-.42-.17-.635-.237l-.127-.037Z"></path></clipPath></defs><g clip-path="url(#a)" transform="translate(-899 -704)"><g clip-path="url(#b)" transform="translate(899.398 704.39)"><path d="M0 0h15.938v15.938H0V0z"></path></g></g></svg>
-                      <span className="capitalize ">español</span>
-                      <svg className="ml-2 w-4 h-4" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                  </a>
-                  <!-- Dropdown menu -->
-                  <div id="dropdownLanguageDiv" className="hidden z-10 w-36 bg-white rounded-lg divide-y divide-gray-100 shadow dark:bg-gray-700" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(0px, 6715px);" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="bottom">
-                      <ul className="py-2 text-sm text-black dark:text-gray-200" aria-labelledby="dropdownLanguage">
-                        <li>
-                          <a rel="alternate" hreflang="ca" href="https://www.visitlamassana.ad/ca" className="block py-2 mx-2 px-2 rounded hover:bg-gray-6 capitalize">català</a>
-                        </li>
-                        <li>
-                          <a rel="alternate" hreflang="en" href="https://www.visitlamassana.ad/en" className="block py-2 mx-2 px-2 rounded hover:bg-gray-6 capitalize">English</a>
-                        </li>                                                                                                                                                                                              <li>
-                          <a rel="alternate" hreflang="fr" href="https://www.visitlamassana.ad/fr" className="block py-2 mx-2 px-2 rounded hover:bg-gray-6 capitalize">français</a>
-                        </li>                                        
-                      </ul>
-                  </div>
-                  <div className="flex px-4 mt-2">
-                      <a href="https://www.facebook.com/pages/Comu-de-la-Massana/308035544138" target="_blank" className="flex items-center mt-3">
-                          <svg className="w-5 mr-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><path d="M15.304 16.2c.495 0 .896-.4.896-.896V2.696c0-.495-.4-.896-.896-.896H2.696c-.495 0-.896.4-.896.896v12.608c0 .495.4.896.896.896H9v-5.4h-.9a.9.9 0 0 1 0-1.8H9c0-1.707.193-2.783.993-3.68.792-.885 1.718-1.27 2.607-1.27a.9.9 0 0 1 0 1.8c-.393 0-.826.18-1.264.67-.399.446-.536 1.212-.536 2.48h1.8a.9.9 0 0 1 0 1.8h-1.8v5.4h4.504ZM0 15.304V2.696A2.695 2.695 0 0 1 2.696 0h12.608A2.695 2.695 0 0 1 18 2.696v12.608A2.695 2.695 0 0 1 15.304 18H2.696A2.695 2.695 0 0 1 0 15.304Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      </a>
-                      <a href="https://www.instagram.com/lamassana/" target="_blank" className="flex items-center mt-3">
-                          <svg className="w-5 mr-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><path d="M4.496 0h9.008A4.495 4.495 0 0 1 18 4.496v9.008A4.495 4.495 0 0 1 13.504 18H4.496A4.495 4.495 0 0 1 0 13.504V4.496A4.495 4.495 0 0 1 4.496 0ZM1.8 13.504A2.695 2.695 0 0 0 4.496 16.2h9.008a2.695 2.695 0 0 0 2.696-2.696V4.496A2.695 2.695 0 0 0 13.504 1.8H4.496A2.695 2.695 0 0 0 1.8 4.496v9.008ZM4.5 9a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0Zm7.2 0a2.7 2.7 0 1 0-5.4 0 2.7 2.7 0 0 0 5.4 0Zm1.8-3.6a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      </a>
-                      <a href="https://twitter.com/comudelamassana" target="_blank" className="flex items-center mt-3">
-                          <svg className="w-5 mr-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 16"><path d="M5.216 11.264a.884.884 0 0 1-.123 1.542c-.237.109-2.346.672-2.346.672.84.489 2.018.744 3.557.744 4.94 0 8.545-3.586 8.549-8.953l-.004-.38c0-1.848-.981-3.12-2.694-3.111-1.725.009-2.703 1.271-2.703 3.111l-.002.878a.896.896 0 0 1-1.008.883 10.212 10.212 0 0 1-5.884-2.764s-.208.774-.258 1.13c.03.034.587.592.905.817.244.172.508.328.793.464a.884.884 0 0 1 .418 1.187.904.904 0 0 1-1.201.413 7.277 7.277 0 0 1-.804-.448c.356 1.437 1.255 2.779 2.805 3.815Zm11.83-9.477c.906-.048 1.225.51.702 1.246L16.641 4.59c.004.099.01.56.01.679C16.648 11.616 12.242 16 6.305 16c-2.931 0-4.825-.757-6.13-2.523a.886.886 0 0 1 .558-1.397l2.105-.45C.096 8.892-.157 5 1.465 1.827a.905.905 0 0 1 1.518-.139 8.344 8.344 0 0 0 4.676 3.019C7.749 2.038 9.394.014 12.146 0c1.642-.008 2.891.712 3.653 1.853l1.247-.066Z" fill="#000" fill-rule="nonzero"></path></svg>
-                      </a>
-                  </div>
+                <div className="p-4">
+                  {solutions.map((item) => (
+                    <div
+                      key={item.name}
+                      className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
+                    >
+                      <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                        <item.icon
+                          className="h-6 w-6 text-gray-600 group-hover:text-cyan-500"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div>
+                        <a
+                          href={item.href}
+                          className="font-semibold text-gray-900"
+                        >
+                          {item.name}
+                          <span className="absolute inset-0" />
+                        </a>
+                        <p className="mt-1 text-gray-600">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div> */}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
-};
-
-export default Header;
+}

@@ -34,7 +34,7 @@ const PhotoFiveGroup = ({
 
         <article className="grid grid-cols-2 gap-2 mt-2">
           {groupPhotos.map((photo, index) => (
-            <a href={photo.href} className="relative">
+            <a key={photo.title} href={photo.href} className="relative">
               <Image
                 loading="lazy"
                 className="aspect-square w-full object-cover rounded-2xl"
@@ -71,6 +71,7 @@ const PhotoFiveGroup = ({
 
         {groupPhotos.map((photo, index) => (
           <a
+            key={photo.title}
             href={photo.href}
             className={`relative col-start-${(index+1) % 2 === 0 ? 4 : 3}`}
           >
