@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 import Header from "./components/header/header";
 
@@ -20,9 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body >
-        <div className="fixed w-full z-50">
+        {/* <div className="fixed w-full z-50">
         <Header/>
-        </div>
+        </div> */}
           {children}
       </body>
     </html>
