@@ -155,7 +155,7 @@ const firtsPhotoFiveGroup: PhotoFiveGroupType = {
 export default function Home() {
   return (
     <>
-      <div className="h-full lg:h-screen overflow-auto border bg-white">
+      <div className="border bg-white">
         <VideoCover100
           text="Descubre rutas y puntos de interés de la Massana"
           buttonText="Ver las rutas"
