@@ -2,6 +2,7 @@ import Logo from "./components/logos/logo";
 import PhotoCard from "./components/photoCard/photoCard";
 import PhotoFiveGroup, { PhotoFiveGroupType } from "./components/photoFiveGroup/photoFiveGroup";
 import Slider from "./components/slider/slider";
+import SquareImageOutSideText from "./components/squareImageOutSideText/squareImageOutSideText";
 
 import VideoCover100 from "./components/videoCover100/videoCover100";
 
@@ -196,6 +197,10 @@ export default function Home() {
 
         <Slider title='Experiencias' text='Os proponemos juegos y recorridos temáticos de distintos niveles de dificultad para redescubrir la parroquia de la Massana. ¡Se puede hacer en familia, con los amigos y en pareja! Todos los juegos de escapegame en el exterior, se inspiran en hechos reales. Además, disfruta de la naturaleza y relájate con los baños de bosque.'>
           <PhotoFiveGroup   principalPhoto={firtsPhotoFiveGroup.principalPhoto} groupPhotos={firtsPhotoFiveGroup.groupPhotos} />
+        </Slider>
+
+        <Slider title='Iglesias centenarias' text='Descubre las iglesias y el románico de Andorra.'>
+          <SquareImageOutSideText></SquareImageOutSideText>
         </Slider>
       </div>
     </>
